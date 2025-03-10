@@ -1,12 +1,12 @@
 
 
-TEST_FLAG = "1"  # 实盘: 0, 模拟盘: 1
+TEST_FLAG = "0"  # 实盘: 0, 模拟盘: 1
 
 
-LOGIN_INFO={
-    "APIKey":"d993e7b6-292f-4891-901d-46b34197913a",
-    "SecretKey":"783194C5C16766122AB9CCCBB983F563",
-    "Passphrase":""
+SECRET_INFO={
+    "APIKey":"ffcd4060-9704-416a-958d-7217a9a98c9b",
+    "SecretKey":"72285DDB0B50C3AA132F1FDA308F630C",
+    "Passphrase":"Gg4306811993."
 }
 
 LOGGING_LEVEL="DEBUG"
