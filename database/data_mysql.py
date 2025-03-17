@@ -1,25 +1,36 @@
-import pymysql,logging
-from config.config import MYSQL_INFO,LOGGING_LEVEL
+from logging import Logger
+
+import pymysql,logging,os
+from config.config import *
+from dotenv import load_dotenv
 
 # 数据库
 class DataMySQL(object):
     def __init__(self,Logger):
-        self.port = MYSQL_INFO['port']
-        self.user = MYSQL_INFO['user']
-        self.password = MYSQL_INFO['password']
-        self.db = MYSQL_INFO['db']
-        self.host = MYSQL_INFO['host']
-        self.Logger = Logger
+        self.Logger=Logger
+        self.DB = MYSQL_INFO["db"]
+        self.DB_Host = MYSQL_INFO["host"]
+        self.DB_Port = MYSQL_INFO["port"]
+        if TEST_FLAG == "1":
+            self.DB_User = MYSQL_INFO["user"]
+            self.DB_Password = MYSQL_INFO["password"]
+            self.Logger.info("load test config success!")
+        else:
+            load_dotenv(dotenv_path='.env')
+            self.DB_User = os.getenv("DB_USER")
+            self.DB_Password = os.getenv("DB_PASSWORD")
+            self.Logger.info("load formal config success!")
+
 
     def connect(self):
         """建立数据库连接‌:ml-citation{ref="1,3" data="citationList"}"""
         try:
             self.conn = pymysql.connect(
-                host=self.host,
-                port=self.port,
-                user=self.user,
-                password=self.password,
-                db=self.db,
+                host=self.DB_Host,
+                port=self.DB_Port,
+                user=self.DB_User,
+                password=self.DB_Password,
+                db=self.DB,
                 charset='utf8mb4',  # 字符集设置‌:ml-citation{ref="3,5" data="citationList"}
                 cursorclass=pymysql.cursors.DictCursor  # 字典类型游标‌:ml-citation{ref="4" data="citationList"}
             )
@@ -28,6 +39,7 @@ class DataMySQL(object):
         except pymysql.Error as e:
             self.Logger.error(e)
             raise
+
 
     def disconnect(self):
         """关闭连接和游标‌:ml-citation{ref="1,3" data="citationList"}"""

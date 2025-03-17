@@ -1,17 +1,13 @@
 import okx.MarketData as MarketData
-from config.config import TEST_FLAG
-
-flag = "0"  # 实盘:0 , 模拟盘：1
-
-
+from config.config import SECRET_INFO
 
 
 
 
 class MarkData:
     def __init__(self):
-        self.flag = TEST_FLAG
-        self.marketDataAPI =  MarketData.MarketAPI(flag=flag)
+        self.flag = SECRET_INFO["Flag"]
+        self.marketDataAPI =  MarketData.MarketAPI(flag=SECRET_INFO["Flag"])
 
     # 获取所有产品行情信息
     def get_tickers(self):
@@ -40,3 +36,14 @@ class MarkData:
     '''
     def get_history_candlesticks(self, instId):
         return self.marketDataAPI.get_history_candlesticks(instId=instId)
+
+    def handle_tickers(self,tickers_data):
+        data = tickers_data["data"]
+        for inst in data:
+            print(inst)
+
+
+if __name__ == '__main__':
+    md = MarkData()
+    re = md.get_tickers()
+    md.handle_tickers(re)

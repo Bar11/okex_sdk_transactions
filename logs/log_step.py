@@ -10,6 +10,10 @@ class LoggingHandler:
         self.logger = logging.getLogger("okex-sdk-transactions")
         self.logger.setLevel(LOGGING_LEVEL)
 
+    def Init_Logger(self):
+        self.setup_time_rotation()
+        return self.logger
+
     def setup_time_rotation(self):
         """时间轮转配置"""
         handler = TimedRotatingFileHandler(

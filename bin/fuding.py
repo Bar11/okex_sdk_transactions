@@ -9,7 +9,8 @@ class MyFuding(object):
         self.apikey = SECRET_INFO["APIKey"]
         self.secretkey = SECRET_INFO["SecretKey"]
         self.passphrase = SECRET_INFO["Passphrase"]
-        self.flag = TEST_FLAG
+        self.flag = SECRET_INFO["Flag"]
+        self.marketDataAPI = MarketData.MarketAPI(flag=SECRET_INFO["Flag"])
         self.FundingAPI = Funding.FundingAPI(self.apikey, self.secretkey, self.passphrase, False, self.flag)
 
     # 获取币种列表
