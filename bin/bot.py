@@ -1,11 +1,10 @@
 import os
 from config.config import *
 from dotenv import load_dotenv
-import okx.Account as Account
-# import okx. as Order
-import okx.Funding as Funding
-import okx.Trade as Trade
-import okx.MarketData as MarketData
+from .account import MyAccount
+from .funding import MyFuding
+from .marketdata import MyMarketData
+from .transaction import MyTrade
 
 
 class Robot(object):
@@ -17,7 +16,6 @@ class Robot(object):
         self.FLAG = "<FLAGE>"
         self.Logger = Logger
         self.AccountAPI = None
-        self.orderAPI = None
         self.TradeAPI = None
         self.MarketAPI = None
         self.FundingAPI = None
@@ -41,47 +39,32 @@ class Robot(object):
 
 
     def init_API(self):
-        print(self.API_KEY)
-        print(self.API_SECRET)
-        print(self.PASSPHRASE)
-        print(self.FLAG)
-        self.AccountAPI = Account.AccountAPI(api_key=self.API_KEY, api_secret_key=self.API_SECRET,passphrase=self.PASSPHRASE,flag=self.FLAG)
-        self.TradeAPI = Trade.TradeAPI(api_key=self.API_KEY, api_secret_key=self.API_SECRET,passphrase=self.PASSPHRASE,flag=self.FLAG)
-        self.FundingAPI = Funding.FundingAPI(api_key=self.API_KEY,api_secret_key=self.API_SECRET,passphrase=self.PASSPHRASE,flag=self.FLAG)
-        self.MarketAPI = MarketData.MarketAPI(api_key=self.API_KEY, api_secret_key=self.API_SECRET,passphrase=self.PASSPHRASE,flag=self.FLAG)
+        self.AccountAPI = MyAccount(self.API_KEY, self.API_SECRET,self.PASSPHRASE,self.FLAG)
+        self.TradeAPI = MyTrade(self.API_KEY, self.API_SECRET,self.PASSPHRASE,self.FLAG)
+        self.FundingAPI = MyFuding(self.API_KEY, self.API_SECRET,self.PASSPHRASE,self.FLAG)
+        self.MarketAPI = MyMarketData(self.API_KEY, self.API_SECRET,self.PASSPHRASE,self.FLAG)
         self.Logger.info("init API success!")
 
     # 直接请求账户信息，作为校验
     def CheckIdentity(self):
-        try:
-            resp = self.AccountAPI.get_account_balance()
+        # try:
+            resp = self.AccountAPI.get_account_config()
             if resp["code"]=="0":
                 self.Logger.info("check identity success!")
-                self.proccessing_account_balance(resp)
                 return True
             else:
                 self.Logger.error(resp['code'] +"  "+ resp['msg']  )
                 return False
-        except:
-            self.Logger.error("check identity failed!！！")
-            return False
-
-    # 账户余额数据解析
-    def proccessing_account_balance(self,data):
-        data = data["data"]
-        availBal_list = []
-        frozenBal_list = []
-        for d in data:
-            if d['availBal']>0 and d['Bal']>0:
-                availBal_list.append(d)
-            elif d['frozenBal']>0:
-                frozenBal_list.append(d)
-            else:
-                pass
-        return Account
+        # except:
+        #     self.Logger.error("check identity failed!！！")
+        #     return False
 
 
 
+    def data_init(self):
+        # 获取交易产品基础信息
+        data = self.AccountAPI.get_instruments_SPOT()
+        print(data)
 
     def processing_response(self, response):
         pass

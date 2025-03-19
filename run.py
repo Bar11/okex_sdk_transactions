@@ -9,7 +9,7 @@ class  Run(object):
         self.Logger = None
         self.Bot = None
 
-    def run(self):
+    def setup(self):
         self.init_log()
         self.init_DB(self.Logger)
         self.init_Bot(self.Logger)
@@ -36,4 +36,8 @@ class  Run(object):
 
 if __name__ == '__main__':
     r= Run()
-    r.run()
+    r.setup()
+    bot_ = r.Bot
+    bot_.TradeAPI.set_order_base("ETH-USDT","4","quote_ccy","buy")
+    resp = bot_.TradeAPI.place_algo_order()
+    print(resp)
